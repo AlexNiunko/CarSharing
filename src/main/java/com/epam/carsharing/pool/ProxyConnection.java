@@ -1,4 +1,8 @@
-package com.epam.carsharing;
+package com.epam.carsharing.pool;
+
+import com.epam.carsharing.pool.ConnectionPool;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.Map;
@@ -6,7 +10,19 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class ProxyConnection implements Connection {
+    static final Logger logger = LogManager.getLogger();
     private Connection connection;
+
+    ProxyConnection(Connection connection) {
+        this.connection = connection;
+    }
+    void reallyClose(){
+        try {
+            this.close();
+        } catch (SQLException e) {
+            logger.warn("failed to close connection {}",e.getMessage());
+        }
+    }
 
     @Override
     public Statement createStatement() throws SQLException {
@@ -50,7 +66,7 @@ public class ProxyConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
-        connection.close();
+        ConnectionPool.getInstance().returnConnection(this);
     }
 
     @Override

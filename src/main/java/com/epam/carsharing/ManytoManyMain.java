@@ -1,7 +1,8 @@
 package com.epam.carsharing;
 
+import com.epam.carsharing.pool.ConnectionPool;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -12,7 +13,7 @@ public class ManytoManyMain {
         try(
             Statement statement=connection.createStatement())
         {
-            String sql="INSERT INTO orders (id_car,id_client) VALUES(113,22)";
+            String sql="INSERT INTO orders (order_mileage) VALUES(113)";
             statement.execute(sql);
             System.out.println("ok");
         } catch (SQLException e){
